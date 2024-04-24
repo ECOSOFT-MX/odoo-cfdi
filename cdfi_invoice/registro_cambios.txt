@@ -1,3 +1,6 @@
+v13.35
+-Corregir error con impuesto cuando producto tiene 100% de descuento.
+
 v13.34
 -Corregir error en QR de pagos
 
