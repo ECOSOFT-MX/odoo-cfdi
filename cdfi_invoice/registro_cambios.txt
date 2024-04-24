@@ -1,3 +1,6 @@
+v16.22
+-Error cuando el último producto tiene 100% de descuento
+
 v16.21
 -Corregir error en QR de pagos
 

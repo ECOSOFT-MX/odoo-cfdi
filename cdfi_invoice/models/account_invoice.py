@@ -504,10 +504,10 @@ class AccountMove(models.Model):
         self.discount = round(self.discount, no_decimales)
         self.subtotal = self.roundTraditional(self.subtotal, no_decimales)
         impuestos = {}
-        if objetoimp != '04':
-           tras_tot = round(tras_tot, no_decimales)
-           ret_tot = round(ret_tot, no_decimales)
-           if tax_grouped_tras or tax_grouped_ret:
+        #if objetoimp != '04':
+        if tax_grouped_tras or tax_grouped_ret:
+               tras_tot = round(tras_tot, no_decimales)
+               ret_tot = round(ret_tot, no_decimales)
                retenciones = []
                traslados = []
                if tax_grouped_tras:
