@@ -4,26 +4,26 @@
         <!--EMPTY HEADER SO THE NAME IS IN THE TOP-->
 
         <xpath expr="//div[hasclass('row')]//div[@name='address_not_same_as_shipping']//t[@t-set='address']" position="after">
-            <span t-if="o.company_cfdi == True">
+            <span t-if="o.company_cfdi == True and o.factura_cfdi">
                 RFC: <span t-esc="o.partner_id.vat"/><br/>
                 Regimen fiscal: <span t-field="o.partner_id.regimen_fiscal_id.code"/> C.P. <span t-field="o.partner_id.zip"/> <br/>
             </span>
         </xpath>
         <xpath expr="//div[hasclass('row')]//div[@name='address_same_as_shipping']//t[@t-set='address']" position="after">
-            <span t-if="o.company_cfdi == True">
+            <span t-if="o.company_cfdi == True and o.factura_cfdi">
                 RFC: <span t-esc="o.partner_id.vat"/><br/>
                 Regimen fiscal: <span t-field="o.partner_id.regimen_fiscal_id.code"/> C.P. <span t-field="o.partner_id.zip"/> <br/>
             </span>
         </xpath>
         <xpath expr="//div[hasclass('row')]//div[@name='no_shipping']//t[@t-set='address']" position="after">
-            <span t-if="o.company_cfdi == True">
+            <span t-if="o.company_cfdi == True and o.factura_cfdi">
                 RFC: <span t-esc="o.partner_id.vat"/><br/>
                 Regimen fiscal: <span t-field="o.partner_id.regimen_fiscal_id.code"/> C.P. <span t-field="o.partner_id.zip"/> <br/>
             </span>
         </xpath>
 
         <xpath expr="//div[@name='customer_code']" position="after">
-            <t t-if="o.company_cfdi == True">
+            <t t-if="o.company_cfdi == True and o.factura_cfdi">
                 <t t-set="original_o_grid_layout" t-value="o_grid_layout"/>
                 <t t-set="o_grid_layout" t-value="'col-auto col-3 mw-100 mb-2'"/>
 
@@ -47,7 +47,7 @@
         </xpath>
 
         <xpath expr="//table[@name='invoice_line_table']/thead/tr/th[1]" position="before">
-            <th t-if="o.company_cfdi == True">
+            <th t-if="o.company_cfdi == True and o.factura_cfdi">
                 <span>Clave Producto</span>
             </th>
         </xpath>
@@ -57,17 +57,17 @@
 
         <!-- INFORMACION PRODUCTOS -->
         <xpath expr="//table[@name='invoice_line_table']/thead/tr/th[4]" position="after">
-            <th t-if="o.company_cfdi == True" class="text-end">
+            <th t-if="o.company_cfdi == True and o.factura_cfdi" class="text-end">
                 <span>Unidad SAT</span>
             </th>
         </xpath>
         <xpath expr="//table[@name='invoice_line_table']/tbody//tr[1]//td[4]" position="after">
-            <td t-if="o.company_cfdi == True" class="text-end"><span t-field="line.product_id.cat_unidad_medida.clave" /> - 
+            <td t-if="o.company_cfdi == True and o.factura_cfdi" class="text-end"><span t-field="line.product_id.cat_unidad_medida.clave" /> - 
                 <span t-field="line.product_id.cat_unidad_medida.descripcion" /></td>
         </xpath>
 
     <xpath expr="//div[@name='comment']" position="after">
-        <t t-if="o.company_cfdi == True">
+        <t t-if="o.company_cfdi == True and o.factura_cfdi">
 				<t t-if="o.tipo_relacion">
 					<div class="row">
 					    <div>
