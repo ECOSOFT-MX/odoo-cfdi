@@ -1,3 +1,6 @@
+v13.36
+-Ocultar generar botón Generar REP cuando no hay factura PPD ligada al pago.
+
 v13.35
 -Corregir error con impuesto cuando producto tiene 100% de descuento.
 

@@ -110,6 +110,15 @@ class AccountPayment(models.Model):
     partials_payment_ids = fields.One2many('facturas.pago', 'doc_id', 'Montos')
     manual_partials = fields.Boolean("Montos manuales")
     different_currency = fields.Boolean(_("Diferente moneda"), compute='_compute_different_currency')
+    requiere_rep = fields.Boolean("Requiere REP", compute='_get_requiere_rep')
+
+    def _get_requiere_rep(self):
+        for record in self:
+            record.requiere_rep = False
+            if record.invoice_ids:
+                for invoice in record.invoice_ids:
+                    if invoice.methodo_pago == 'PPD':
+                       record.requiere_rep = True
 
     @api.depends('name')
     def _get_number_folio(self):

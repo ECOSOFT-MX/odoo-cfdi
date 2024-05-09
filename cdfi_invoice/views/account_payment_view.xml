@@ -8,8 +8,8 @@
             <field name="arch" type="xml">
                 <data>
                     <button name="post" position="after">
-                        <button name="complete_payment" class="oe_highlight" states="posted" attrs="{'invisible':['|',('estado_pago','in',('pago_correcto', 'factura_cancelada')),
-                                                                  ]}" string="Genera REP" type="object"/>
+                        <button name="complete_payment" class="oe_highlight" attrs="{'invisible':['|',('estado_pago','in',('pago_correcto', 'factura_cancelada')),
+                                                         ('requiere_rep','=', False) ]}" string="Genera REP" type="object"/>
                         <button name="send_payment" class="oe_highlight" attrs="{'invisible':[('estado_pago','!=','pago_correcto')]}" string="Enviar por correo-e" type="object"/>
                         <button name="importar_incluir_cep" string="Incluir CEP" type="object" attrs="{'invisible':['|',('forma_pago','!=','03'),
                                                          ('estado_pago','in',('pago_correcto', 'factura_cancelada'))]}"/>
@@ -25,6 +25,7 @@
                                             <field name="forma_pago" attrs="{'readonly': [('estado_pago','!=','pago_no_enviado')]}"/>
                                             <field name="fecha_pago" attrs="{'readonly': [('estado_pago','!=','pago_no_enviado')]}"/>
                                             <field name="numero_operacion" attrs="{'readonly': [('estado_pago','!=','pago_no_enviado')]}"/>
+                                            <field name="requiere_rep" invisible="1"/>
                                         </group>
                                         <group string="Llenado">
                                             <field name="manual_partials" attrs="{'readonly': [('estado_pago','!=','pago_no_enviado')]}"/>
