@@ -1,3 +1,6 @@
+v17.08
+-Leyenda cancelado en factura
+
 v17.07
 -Cambios en el PDF, corregir impuestos con producto final con 100% de descuento
 

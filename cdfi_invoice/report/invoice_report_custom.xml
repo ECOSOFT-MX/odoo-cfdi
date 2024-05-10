@@ -3,6 +3,20 @@
   <template id="report_invoice_inherit_cdfi" inherit_id="account.report_invoice_document">
         <!--EMPTY HEADER SO THE NAME IS IN THE TOP-->
 
+        <xpath expr="//div[@id='informations']" position="after">
+            <t t-if="o.company_id.modo_prueba == True">
+                <div style="position:absolute;opacity:0.25;z-index:1000;width:100%;">
+                    <center><span style="font-size:100px;color:red;">FACTURA DE PRUEBA</span></center>
+                </div>
+            </t>
+
+            <t t-if="o.estado_factura == 'factura_cancelada'">
+                <div style="position:absolute;opacity:0.25;z-index:1000;width:100%;">
+                    <center><span style="font-size:100px;color:red;">CANCELADO</span></center>
+                </div>
+            </t>
+        </xpath>
+
         <xpath expr="//div[hasclass('row')]//div[@name='address_not_same_as_shipping']//t[@t-set='address']" position="after">
             <span t-if="o.company_cfdi == True and o.factura_cfdi">
                 RFC: <span t-esc="o.partner_id.vat"/><br/>
@@ -52,7 +66,7 @@
             </th>
         </xpath>
         <xpath expr="//table[@name='invoice_line_table']/tbody//tr[1]//td[1]" position="before">
-            <td t-if="o.company_cfdi == True"><span t-field="line.product_id.clave_producto"/></td>
+            <td t-if="o.company_cfdi == True and o.factura_cfdi"><span t-field="line.product_id.clave_producto"/></td>
         </xpath>
 
         <!-- INFORMACION PRODUCTOS -->
