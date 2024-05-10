@@ -1,5 +1,11 @@
-v16.22
+v16.24
+-Leyenda cancelado en factura
+
+v16.23
 -Error cuando el último producto tiene 100% de descuento
+
+v16.22
+-Cambios en el PDF
 
 v16.21
 -Corregir error en QR de pagos
