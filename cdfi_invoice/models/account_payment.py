@@ -679,14 +679,11 @@ class AccountPayment(models.Model):
                 url = '%s' % ('http://facturacion2.itadmin.com.mx/api/payment')
             elif p.company_id.proveedor_timbrado == 'multifactura3':
                 url = '%s' % ('http://facturacion3.itadmin.com.mx/api/payment')
-            elif p.company_id.proveedor_timbrado == 'gecoerp':
-                if p.company_id.modo_prueba:
-                    #url = '%s' % ('https://ws.gecoerp.com/itadmin/pruebas/payment/?handler=OdooHandler33')
-                    url = '%s' % ('https://itadmin.gecoerp.com/payment2/?handler=OdooHandler33')
-                else:
-                    url = '%s' % ('https://itadmin.gecoerp.com/payment2/?handler=OdooHandler33')
+            else:
+                raise UserError(_('Error, falta seleccionar el servidor de timbrado en la configuración de la compañía.'))
+
             try:
-                response = requests.post(url , 
+                response = requests.post(url ,
                                      auth=None,verify=False, data=json.dumps(values), 
                                      headers={"Content-type": "application/json"})
             except Exception as e:
@@ -762,7 +759,7 @@ class AccountPayment(models.Model):
         
         options = {'width': 275 * mm, 'height': 275 * mm}
         qr_value = 'https://verificacfdi.facturaelectronica.sat.gob.mx/default.aspx?&id=%s&re=%s&rr=%s&tt=%s.%s&fe=%s' % (self.folio_fiscal,
-                                                 self.company_id.vat, 
+                                                 self.company_id.vat,
                                                  self.partner_id.vat,
                                                  '0000000000',
                                                  '000000',
@@ -839,12 +836,9 @@ class AccountPayment(models.Model):
                     url = '%s' % ('http://facturacion2.itadmin.com.mx/api/refund')
                 elif p.company_id.proveedor_timbrado == 'multifactura3':
                     url = '%s' % ('http://facturacion3.itadmin.com.mx/api/refund')
-                elif p.company_id.proveedor_timbrado == 'gecoerp':
-                    if p.company_id.modo_prueba:
-                         #url = '%s' % ('https://ws.gecoerp.com/itadmin/pruebas/refund/?handler=OdooHandler33')
-                        url = '%s' % ('https://itadmin.gecoerp.com/refund/?handler=OdooHandler33')
-                    else:
-                        url = '%s' % ('https://itadmin.gecoerp.com/refund/?handler=OdooHandler33')
+                else:
+                    raise UserError(_('Error, falta seleccionar el servidor de timbrado en la configuración de la compañía.'))
+
                 response = requests.post(url , 
                                          auth=None,verify=False, data=json.dumps(values), 
                                          headers={"Content-type": "application/json"})
