@@ -713,11 +713,6 @@ Si requiere timbrar la factura nuevamente deshabilite el checkbox de "Proceso de
                 url = '%s' % ('http://facturacion2.itadmin.com.mx/api/invoice')
             elif invoice.company_id.proveedor_timbrado == 'multifactura3':
                 url = '%s' % ('http://facturacion3.itadmin.com.mx/api/invoice')
-            elif invoice.company_id.proveedor_timbrado == 'gecoerp':
-                if self.company_id.modo_prueba:
-                    url = '%s' % ('https://itadmin.gecoerp.com/invoice/?handler=OdooHandler33')
-                else:
-                    url = '%s' % ('https://itadmin.gecoerp.com/invoice/?handler=OdooHandler33')
             else:
                 invoice.write({'proceso_timbrado': False})
                 self.env.cr.commit()
@@ -806,11 +801,6 @@ Si requiere timbrar la factura nuevamente deshabilite el checkbox de "Proceso de
                     url = '%s' % ('http://facturacion2.itadmin.com.mx/api/refund')
                 elif invoice.company_id.proveedor_timbrado == 'multifactura3':
                     url = '%s' % ('http://facturacion3.itadmin.com.mx/api/refund')
-                elif self.company_id.proveedor_timbrado == 'gecoerp':
-                    if self.company_id.modo_prueba:
-                        url = '%s' % ('https://itadmin.gecoerp.com/refund/?handler=OdooHandler33')
-                    else:
-                        url = '%s' % ('https://itadmin.gecoerp.com/refund/?handler=OdooHandler33')
                 else:
                     raise UserError(
                         _('Error, falta seleccionar el servidor de timbrado en la configuración de la compañía.'))
@@ -889,8 +879,6 @@ Si requiere timbrar la factura nuevamente deshabilite el checkbox de "Proceso de
                 url = '%s' % ('http://facturacion2.itadmin.com.mx/api/consulta-cacelar')
             elif invoice.company_id.proveedor_timbrado == 'multifactura3':
                 url = '%s' % ('http://facturacion3.itadmin.com.mx/api/consulta-cacelar')
-            elif invoice.company_id.proveedor_timbrado == 'gecoerp':
-                url = '%s' % ('http://facturacion.itadmin.com.mx/api/consulta-cacelar')
             else:
                 raise UserError(
                     _('Error, falta seleccionar el servidor de timbrado en la configuración de la compañía.'))
