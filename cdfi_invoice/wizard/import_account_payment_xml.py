@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models,fields,api, _
-from odoo.exceptions import UserError, Warning
+from odoo.exceptions import UserError
 import os
 from lxml import etree
 import base64
@@ -220,10 +220,10 @@ class import_account_payment_from_xml(models.TransientModel):
         self.ensure_one()
         payment_id = self.env['account.payment'].browse(self._context.get('active_id'))
         if not self.import_file:
-            raise Warning("Seleccione primero el archivo.")
+            raise UserError("Seleccione primero el archivo.")
         p, ext = os.path.splitext(self.file_name)
         if ext[1:].lower() !='xml':
-            raise Warning(_("Formato no soportado \"{}\", importa solo archivos XML").format(self.file_name))
+            raise UserError(_("Formato no soportado \"{}\", importa solo archivos XML").format(self.file_name))
 
         file_content = base64.b64decode(self.import_file)
         xml_data = etree.fromstring(file_content)
@@ -278,7 +278,7 @@ class import_account_payment_from_xml(models.TransientModel):
         cargar_values = {
             'total_pago': monto_total,
             'methodo_pago': 'MetodoPago' in xml_data.attrib and xml_data.attrib['MetodoPago'] or '',
-            'forma_pago_id' : 'FormaPago' in xml_data.attrib and  self.env['catalogo.forma.pago'].sudo().search([('code','=',xml_data.attrib['FormaPago'])]) or '',
+            'forma_pago_id' : 'FormaPago' in xml_data.attrib and  self.env['catalogo.forma.pago'].sudo().search([('code','=',xml_data.attrib['FormaPago'])]) or None,
 #            'uso_cfdi': Receptor.attrib['UsoCFDI'],
             'folio_fiscal' : TimbreFiscalDigital.attrib['UUID'],
             #'tipo_comprobante': xml_data.attrib['TipoDeComprobante'],
