@@ -552,12 +552,9 @@ class AccountPayment(models.Model):
                 url = '%s' % ('http://facturacion2.itadmin.com.mx/api/payment')
             elif self.company_id.proveedor_timbrado == 'multifactura3':
                 url = '%s' % ('http://facturacion3.itadmin.com.mx/api/payment')
-            elif self.company_id.proveedor_timbrado == 'gecoerp':
-                if self.company_id.modo_prueba:
-                    #url = '%s' % ('https://ws.gecoerp.com/itadmin/pruebas/payment/?handler=OdooHandler33')
-                    url = '%s' % ('https://itadmin.gecoerp.com/payment2/?handler=OdooHandler33')
-                else:
-                    url = '%s' % ('https://itadmin.gecoerp.com/payment2/?handler=OdooHandler33')
+            else:
+                raise UserError(_('Error, falta seleccionar el servidor de timbrado en la configuración de la compañía.'))
+
             try:
                 response = requests.post(url , 
                                      auth=None,verify=False, data=json.dumps(values), 
@@ -730,12 +727,9 @@ class AccountPayment(models.Model):
                     url = '%s' % ('http://facturacion2.itadmin.com.mx/api/refund')
                 elif p.company_id.proveedor_timbrado == 'multifactura3':
                     url = '%s' % ('http://facturacion3.itadmin.com.mx/api/refund')
-                elif p.company_id.proveedor_timbrado == 'gecoerp':
-                    if p.company_id.modo_prueba:
-                         #url = '%s' % ('https://ws.gecoerp.com/itadmin/pruebas/refund/?handler=OdooHandler33')
-                        url = '%s' % ('https://itadmin.gecoerp.com/refund/?handler=OdooHandler33')
-                    else:
-                        url = '%s' % ('https://itadmin.gecoerp.com/refund/?handler=OdooHandler33')
+                else:
+                    raise UserError(_('Error, falta seleccionar el servidor de timbrado en la configuración de la compañía.'))
+
                 response = requests.post(url , 
                                          auth=None,verify=False, data=json.dumps(values), 
                                          headers={"Content-type": "application/json"})
