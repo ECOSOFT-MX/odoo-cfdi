@@ -1,3 +1,6 @@
+v16.25
+-Mostrar clave y descripción en Método y forma de pago, régimen fiscal.
+
 v16.24
 -Leyenda cancelado en factura
 
