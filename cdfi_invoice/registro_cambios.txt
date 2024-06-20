@@ -1,3 +1,6 @@
+v17.09
+-Agrega descripción en forma y método de pago, régimen fiscal.
+
 v17.08
 -Leyenda cancelado en factura
 
