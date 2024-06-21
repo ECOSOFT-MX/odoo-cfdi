@@ -217,6 +217,10 @@ class AccountMove(models.Model):
             nombre = self.partner_id.name.upper()
             zipreceptor = self.partner_id.zip
 
+        if self.partner_id.country_id:
+           if self.partner_id.country_id.code != 'MX':
+              zipreceptor = self.journal_id.codigo_postal or self.company_id.zip
+
         no_decimales = self.currency_id.no_decimales
         no_decimales_prod = self.currency_id.decimal_places
         no_decimales_tc = self.currency_id.no_decimales_tc
@@ -268,7 +272,7 @@ class AccountMove(models.Model):
             },
             'receptor': {
                 'nombre': nombre,
-                'rfc': self.partner_id.vat.upper(),
+                'rfc': self.partner_id.vat.upper() if self.partner_id.country_id.code == 'MX' else 'XEXX010101000',
                 'ResidenciaFiscal': self.partner_id.residencia_fiscal,
                 'NumRegIdTrib': self.partner_id.registro_tributario,
                 'UsoCFDI': self.uso_cfdi_id.code,
