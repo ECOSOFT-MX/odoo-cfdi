@@ -1,3 +1,6 @@
+v16.26
+-Evita timbrar productos con costo en cero.
+
 v16.25
 -Mostrar clave y descripción en Método y forma de pago, régimen fiscal.
 
