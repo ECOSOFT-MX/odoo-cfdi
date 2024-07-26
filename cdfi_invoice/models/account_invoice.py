@@ -281,7 +281,7 @@ class AccountMove(models.Model):
             },
             'informacion': {
                 'cfdi': '4.0',
-                'sistema': 'odoo16',
+                'sistema': 'odoo17',
                 'version': '1',
                 'api_key': self.company_id.proveedor_timbrado,
                 'modo_prueba': self.company_id.modo_prueba,
@@ -429,9 +429,9 @@ class AccountMove(models.Model):
                tax_tras = []
                tax_ret = []
 
-            total_wo_discount = round(line.price_unit * line.quantity - tax_included, no_decimales_prod)
-            discount_prod = round(total_wo_discount - line.price_subtotal, no_decimales_prod) if line.discount else 0
-            precio_unitario = round(total_wo_discount / line.quantity, no_decimales_prod)
+            total_wo_discount = self.roundTraditional(line.price_unit * line.quantity - tax_included, no_decimales_prod)
+            discount_prod = self.roundTraditional((line.price_unit * line.quantity - tax_included) - line.price_subtotal, no_decimales_prod) if line.discount else 0
+            precio_unitario = self.roundTraditional((line.price_unit * line.quantity - tax_included) / line.quantity, no_decimales_prod)
             self.subtotal += total_wo_discount
             self.discount += discount_prod
 
@@ -446,6 +446,12 @@ class AccountMove(models.Model):
                     pedimentos.append({'NumeroPedimento': pedimento[0:2] + '  ' + pedimento[2:4] + '  ' + pedimento[
                                                                                                           4:8] + '  ' + pedimento[
                                                                                                                         8:]})
+
+            no_predial = []
+            if line.predial:
+                predial_list = line.predial.replace(' ', '').split(',')
+                for predial in predial_list:
+                    no_predial.append({'NumeroPredial': predial})
 
             terceros = {}
             if self.tercero_id:
@@ -505,7 +511,7 @@ class AccountMove(models.Model):
                                       'Descuento': self.set_decimals(discount_prod, no_decimales_prod),
                                       'ObjetoImp': objetoimp,
                                       'InformacionAduanera': pedimentos and pedimentos or '',
-                                      'predial': line.predial and line.predial or '',
+                                      'no_predial': no_predial and no_predial or '',
                                       'terceros': terceros and terceros or '',
                                       'parte': components and components or '',})
 
@@ -855,7 +861,7 @@ Si requiere timbrar la factura nuevamente deshabilite el checkbox de "Proceso de
             if email_act and email_act.get('context'):
                 email_ctx = email_act['context']
                 email_ctx.update(default_email_from=inv.company_id.email)
-                inv.with_context(email_ctx).message_post_with_template(email_ctx.get('default_template_id'))
+                inv.with_context(email_ctx).message_post_with_source(email_ctx.get('default_template_id'))
         return True
 
     @api.model
