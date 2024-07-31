@@ -318,9 +318,12 @@ class AccountMove(models.Model):
         items = {'numerodepartidas': len(self.invoice_line_ids)}
         invoice_lines = []
         for line in self.invoice_line_ids:
-            if not line.product_id or line.display_type in ('line_section', 'line_note'):
+            if line.display_type in ('line_section', 'line_note'):
                 continue
-
+            if not line.product_id:
+                self.write({'proceso_timbrado': False})
+                self.env.cr.commit()
+                raise UserError(_('Hay una línea sin producto.'))
             if line.price_unit == 0:
                 continue
 

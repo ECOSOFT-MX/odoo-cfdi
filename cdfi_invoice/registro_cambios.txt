@@ -1,3 +1,6 @@
+v16.28
+-Revisa producto en linea de factura.
+
 v16.27
 -Corrección en calculo subtotal productos.
 -Correción en predial
