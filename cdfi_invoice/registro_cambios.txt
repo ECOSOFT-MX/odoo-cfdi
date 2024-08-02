@@ -1,3 +1,6 @@
+v17.12
+-Timbrado de promociones y descuentos.
+
 v17.11
 -Valida producto en línea de factura.
 

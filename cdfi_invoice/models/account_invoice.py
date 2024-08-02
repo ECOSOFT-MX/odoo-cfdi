@@ -320,8 +320,12 @@ class AccountMove(models.Model):
         tax_local_ret_tot = 0
         tax_local_tras_tot = 0
         only_exento = True
-        items = {'numerodepartidas': len(self.invoice_line_ids)}
         invoice_lines = []
+        negative_lines = []
+        for line in self.factura_line_ids:
+            if line.price_subtotal <= 0:
+              negative_lines.append(abs(line.price_subtotal))
+
         for line in self.invoice_line_ids:
             if line.display_type in ('line_section', 'line_note'):
                 continue
@@ -339,10 +343,25 @@ class AccountMove(models.Model):
             if not line.product_id.cat_unidad_medida.clave:
                 self.write({'proceso_timbrado': False})
                 self.env.cr.commit()
-                raise UserError(
-                    _('El producto %s no tiene unidad de medida del SAT configurado.') % (line.product_id.name))
+                raise UserError(_('El producto %s no tiene unidad de medida del SAT configurado.') % (line.product_id.name))
+            promo = 0
+            promocion = False
 
-            price_wo_discount = line.price_unit * (1 - (line.discount / 100.0))
+            if negative_lines:
+               pos = 0
+               for promo_disc in negative_lines:
+                  if promo_disc  <= line.price_subtotal:
+                      price_wo_discount = round(line.price_unit * (1 - (line.discount / 100.0)), no_decimales_prod)
+                      #price_wo_discount = round(line.price_unit - (promo_disc / line.quantity), no_decimales_prod)
+                      promo = promo_disc
+                      promocion = True
+                      negative_lines.pop(pos)
+                      break
+                  else:
+                      price_wo_discount = round(line.price_unit * (1 - (line.discount / 100.0)), no_decimales_prod)
+                  pos += 1
+            else:
+               price_wo_discount = round(line.price_unit * (1 - (line.discount / 100.0)), no_decimales_prod)
 
             taxes_prod = line.tax_ids.compute_all(price_wo_discount, line.currency_id, line.quantity,
                                                   product=line.product_id, partner=line.move_id.partner_id)
@@ -433,7 +452,10 @@ class AccountMove(models.Model):
                tax_ret = []
 
             total_wo_discount = self.roundTraditional(line.price_unit * line.quantity - tax_included, no_decimales_prod)
-            discount_prod = self.roundTraditional((line.price_unit * line.quantity - tax_included) - line.price_subtotal, no_decimales_prod) if line.discount else 0
+            if promocion:
+               discount_prod = self.roundTraditional((line.price_unit * line.quantity - tax_included) - (line.price_subtotal - promo), no_decimales_prod) if line.discount or promo > 0 else 0
+            else:
+               discount_prod = self.roundTraditional((line.price_unit * line.quantity - tax_included) - line.price_subtotal, no_decimales_prod) if line.discount else 0
             precio_unitario = self.roundTraditional((line.price_unit * line.quantity - tax_included) / line.quantity, no_decimales_prod)
             self.subtotal += total_wo_discount
             self.discount += discount_prod
@@ -474,7 +496,6 @@ class AccountMove(models.Model):
             if line.product_id.objetoimp:
                 objetoimp = line.product_id.objetoimp
             else:
-                _logger.info('taxes_prod %s', taxes_prod)
                 if taxes_prod['taxes']:
                   if tax_tras or tax_ret:
                      objetoimp = '02'
