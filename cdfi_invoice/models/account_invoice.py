@@ -322,7 +322,7 @@ class AccountMove(models.Model):
         only_exento = True
         invoice_lines = []
         negative_lines = []
-        for line in self.factura_line_ids:
+        for line in self.invoice_line_ids:
             if line.price_subtotal <= 0:
               negative_lines.append(abs(line.price_subtotal))
 
@@ -333,7 +333,7 @@ class AccountMove(models.Model):
                 self.write({'proceso_timbrado': False})
                 self.env.cr.commit()
                 raise UserError(_('Hay una línea sin producto.'))
-            if line.price_unit == 0:
+            if line.price_unit <= 0:
                 continue
 
             if not line.product_id.clave_producto:
