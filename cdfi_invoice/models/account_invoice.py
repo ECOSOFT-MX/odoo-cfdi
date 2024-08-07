@@ -351,8 +351,8 @@ class AccountMove(models.Model):
                pos = 0
                for promo_disc in negative_lines:
                   if promo_disc  <= line.price_subtotal:
-                      price_wo_discount = round(line.price_unit * (1 - (line.discount / 100.0)), no_decimales_prod)
-                      #price_wo_discount = round(line.price_unit - (promo_disc / line.quantity), no_decimales_prod)
+                      #price_wo_discount = round(line.price_unit * (1 - (line.discount / 100.0)), no_decimales_prod)
+                      price_wo_discount = round(line.price_unit - (promo_disc / line.quantity), no_decimales_prod)
                       promo = promo_disc
                       promocion = True
                       negative_lines.pop(pos)
