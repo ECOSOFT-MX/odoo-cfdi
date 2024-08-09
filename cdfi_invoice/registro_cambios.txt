@@ -1,3 +1,7 @@
+v16.29
+-Corrección EquivalenciaDR en facturas y pagos multimoneda.
+-Factura con descuentos y promociones Odoo nativo
+
 v16.28
 -Revisa producto en linea de factura.
 
