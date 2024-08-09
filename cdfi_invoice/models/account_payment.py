@@ -316,13 +316,17 @@ class AccountPayment(models.Model):
                                                                              payment.date, round=False)
                         paid_amount_comp_curr = payment.currency_id.round(payment.amount * rate_payment_curr_mxn)
 
-                    for field1, field2 in (('debit', 'credit'), ('credit', 'debit')):
-                        for partial in pay_rec_lines[f'matched_{field1}_ids']:
-                            payment_line = partial[f'{field2}_move_id']
-                            invoice_line = partial[f'{field1}_move_id']
-                            invoice_amount = partial[f'{field1}_amount_currency']
+                    for match_field in ('credit', 'debit'):
+                        for partial in pay_rec_lines[f'matched_{match_field}_ids']:
+                            payment_line = partial[f'{match_field}_move_id']
+                            invoice_line = partial[f'{match_field}_move_id']
+                            invoice_amount = partial[f'{match_field}_amount_currency']
                             invoice = invoice_line.move_id
                             decimal_p = 2
+
+                            exchange_amount = 0
+                            for exchange in partial.exchange_move_id:
+                                 exchange_amount += exchange.amount_total
 
                             if partial.amount == 0:
                                 raise UserError(
@@ -337,20 +341,20 @@ class AccountPayment(models.Model):
                                 raise UserError(
                                     "No hay monto total de la factura. Carga el XML en la factura para agregar el monto total.")
 
-                            if invoice.currency_id == payment_line.currency_id:
+                            if invoice.currency_id == payment.currency_id:
                                 amount_paid_invoice_curr = invoice_amount
                                 equivalenciadr = 1
-                            elif invoice.currency_id == mxn_currency and invoice.currency_id != payment_line.currency_id:
+                            elif invoice.currency_id == mxn_currency and invoice.currency_id != payment.currency_id:
                                 amount_paid_invoice_curr = invoice_amount
                                 amount_paid_invoice_comp_curr = payment_line.company_currency_id.round(
-                                    payment.amount * (abs(payment_line.balance) / paid_amount_comp_curr))
-                                invoice_rate = partial.debit_amount_currency / partial.amount
+                                    payment.amount * (abs(payment_line.balance) / (paid_amount_comp_curr + exchange_amount)))
+                                invoice_rate = partial.debit_amount_currency / (partial.amount  + exchange_amount)
                                 exchange_rate = amount_paid_invoice_curr / amount_paid_invoice_comp_curr
                                 equivalenciadr = payment.roundTraditional(exchange_rate, 6) + 0.000001
                             else:
                                 amount_paid_invoice_curr = invoice_amount
-                                exchange_rate = partial.debit_amount_currency / partial.amount
-                                equivalenciadr = payment.roundTraditional(exchange_rate, 6) + 0.000001
+                                exchange_rate = partial.debit_amount_currency / (partial.amount  + exchange_amount)
+                                equivalenciadr = payment.roundTraditional(exchange_rate, 6)# + 0.000001
                             paid_pct = float_round(amount_paid_invoice_curr, precision_digits=6,
                                                    rounding_method='UP') / invoice.total_factura
 
