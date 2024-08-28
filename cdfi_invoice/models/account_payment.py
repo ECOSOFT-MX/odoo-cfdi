@@ -14,7 +14,7 @@ from odoo.exceptions import UserError
 from odoo.tools.float_utils import float_round
 from reportlab.graphics.barcode import createBarcodeDrawing
 from reportlab.lib.units import mm
-
+import re
 from odoo import api, fields, models, _
 from . import amount_to_text_es_MX
 

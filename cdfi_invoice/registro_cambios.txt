@@ -1,3 +1,6 @@
+v17.14
+Redondeos en impuestos locales
+
 v17.13
 -Calculo de EquivalenciaDR en facturas y pagos multimoneda.
 
