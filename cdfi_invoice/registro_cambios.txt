@@ -1,5 +1,8 @@
+v17.15
+-Solo mostrar boton "Validar y Generar REP" en pagos de clientes
+
 v17.14
-Redondeos en impuestos locales
+-Redondeos en impuestos locales
 
 v17.13
 -Calculo de EquivalenciaDR en facturas y pagos multimoneda.

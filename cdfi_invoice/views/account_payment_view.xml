@@ -98,7 +98,7 @@
                     <field name="company_cfdi" invisible="1"/>
                 </field>
                 <xpath expr="//footer/button[@name='action_create_payments']" position="after">
-                    <button string='Validar y Generar REP' name="validate_complete_payment" type="object" class="btn-primary" invisible="company_cfdi == False"/>
+                    <button string='Validar y Generar REP' name="validate_complete_payment" type="object" class="btn-primary" invisible="company_cfdi == False or partner_type == 'supplier'"/>
                 </xpath>
             </field>
         </record>
