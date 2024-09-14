@@ -40,7 +40,7 @@
                                     <field name="tipo_relacion" readonly="estado_factura != 'factura_no_generada'"/>
                                     <field name="uuid_relacionado" readonly="estado_factura != 'factura_no_generada'"/>
                                 </group>
-                                <group  string="Complementos" name="complementos">
+                                <group  string="Complementos" name="complementos" invisible="move_type != 'out_invoice'">
                                     <field name="factura_global" readonly="estado_factura != 'factura_no_generada'"/>
                                 </group>
                             </group>
