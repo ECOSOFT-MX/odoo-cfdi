@@ -129,6 +129,18 @@
                         <span> | Tipo de cambio:</span> <span t-field="o.tipocambio" />
                         <span> | Folio fiscal:</span> <span t-field="o.folio_fiscal" />
                     </div>
+
+                    <t t-if="o.factura_global">
+                       <div>
+                           <span><strong>Factura global</strong></span>
+                       </div>
+                       <div>
+                           <span>Periodicidad:</span> <span t-field="o.fg_periodicidad" />
+                           <span> | Mes:</span> <span t-field="o.fg_meses" />
+                           <span> | Año:</span> <span t-field="o.fg_ano" />
+                       </div>
+                    </t>
+
                 </div>
 
            <br/>
