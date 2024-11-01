@@ -130,6 +130,22 @@ class AccountPayment(models.Model):
     manual_partials = fields.Boolean("Montos manuales")
     different_currency = fields.Boolean(_("Diferente moneda"), compute='_compute_different_currency')
     company_cfdi = fields.Boolean(related="company_id.company_cfdi", store=True)
+    redondeo_t_base = fields.Selection(
+        selection=[('01', _('Tradicional')),
+                   ('02', _('Decimal')),
+                   ('03', _('Techo')),
+                   ('04', _('Truncar')),],
+        default='01',
+        string=_('Redondeo base'), 
+    )
+    redondeo_t_impuesto = fields.Selection(
+        selection=[('01', _('Tradicional')),
+                   ('02', _('Decimal')),
+                   ('03', _('Techo')),
+                   ('04', _('Truncar')),],
+        default='01',
+        string=_('Redondeo impuesto'), 
+    )
 
     @api.depends('name')
     def _get_number_folio(self):
@@ -577,10 +593,10 @@ class AccountPayment(models.Model):
                                       'BaseP': self.roundTraditional(line['BaseP'], 2),
                                       })
                     if line['ImpuestoP'] == '002' and line['TasaOCuotaP'] == '0.160000':
-                        totales.update({'TotalTrasladosBaseIVA16': self.roundTraditional(
-                            line['BaseP'] * float(self.tipocambiop), 2),
-                                        'TotalTrasladosImpuestoIVA16': self.roundTraditional(
-                                            line['ImporteP'] * float(self.tipocambiop), 2), })
+                        totales.update({'TotalTrasladosBaseIVA16': self.selectRoundseparate(
+                            line['BaseP'] * float(self.tipocambiop), 2, self.redondeo_t_base),
+                                        'TotalTrasladosImpuestoIVA16': self.selectRoundseparate(
+                                            line['ImporteP'] * float(self.tipocambiop),2, self.redondeo_t_impuesto),})
                     if line['ImpuestoP'] == '002' and line['TasaOCuotaP'] == '0.080000':
                         totales.update({'TotalTrasladosBaseIVA8': self.roundTraditional(
                             line['BaseP'] * float(self.tipocambiop), 2),
@@ -729,10 +745,27 @@ class AccountPayment(models.Model):
         return '%.*f' % (precision, amount)
 
     def roundTraditional(self, val, digits):
-        if val != 0:
-            return round(val + 10 ** (-len(str(val)) - 1), digits)
-        else:
-            return 0
+       if val != 0:
+          return round(val + 10 ** (-len(str(val)) - 1), digits)
+       else:
+          return 0
+
+    def trunc(self, val, digits):
+       if val != 0:
+          x = 10 ** digits
+          return int(val*x)/(x)
+       else:
+          return 0
+
+    def selectRoundseparate(self, val, digits, r_option):
+       if r_option == '01':
+           return self.roundTraditional(val, digits)
+       elif r_option == '02':
+           return self.set_decimals(val, digits)
+       elif r_option == '03':
+           return math.ceil(val*100)/100
+       else:
+           return self.trunc(val, digits)
 
     def clean_text(self, text):
         clean_text = text.replace('\n', ' ').replace('\\', ' ').replace('-', ' ').replace('/', ' ').replace('|', ' ')

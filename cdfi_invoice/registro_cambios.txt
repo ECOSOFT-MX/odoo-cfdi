@@ -1,4 +1,7 @@
 v17.16
+-Agregar tipos de redondeos en pagos
+
+v17.16
 -Agregar información de factura glboal en formato de factura
 
 v17.15
