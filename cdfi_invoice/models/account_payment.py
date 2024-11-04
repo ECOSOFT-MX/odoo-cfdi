@@ -146,6 +146,14 @@ class AccountPayment(models.Model):
         default='01',
         string=_('Redondeo impuesto'), 
     )
+    redondeo_t_total = fields.Selection(
+        selection=[('01', _('Tradicional')),
+                   ('02', _('Decimal')),
+                   ('03', _('Techo')),
+                   ('04', _('Truncar')),],
+        default='01',
+        string=_('Redondeo total'), 
+    )
 
     @api.depends('name')
     def _get_number_folio(self):
@@ -632,9 +640,9 @@ class AccountPayment(models.Model):
                             line['ImporteP'] * float(self.tipocambiop), 2), })
                     self.total_pago -= round(line['ImporteP'] * float(self.tipocambiop), 2)
                 impuestosp.update({'RetencionesP': retencionp})
-        totales.update({'MontoTotalPagos': self.set_decimals(self.amount,
-                                                             2) if self.monedap == 'MXN' else self.set_decimals(
-            self.amount * float(self.tipocambiop), 2), })
+        totales.update({'MontoTotalPagos': self.set_decimals(self.amount,2) 
+                                           if self.monedap == 'MXN' 
+                                           else self.selectRoundseparate(self.amount * float(self.tipocambiop), 2,  self.redondeo_t_total), })
         # totales.update({'MontoTotalPagos': self.set_decimals(self.total_pago, 2),})
 
         pagos = []
